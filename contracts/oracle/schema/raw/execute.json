@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "update_owner"
+      ],
+      "properties": {
+        "update_owner": {
+          "$ref": "#/definitions/OwnerUpdate"
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "update"
+      ],
+      "properties": {
+        "update": {
+          "$ref": "#/definitions/OracleUpdate"
+        }
+      },
+      "additionalProperties": false
+    }
+  ],
+  "definitions": {
+    "OracleMeta": {
+      "type": "object",
+      "required": [
+        "decimals",
+        "oracle_denom"
+      ],
+      "properties": {
+        "decimals": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "oracle_denom": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "OracleUpdate": {
+      "type": "object",
+      "properties": {
+        "oracle_config": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/definitions/OracleMeta"
+              }
+            ],
+            "maxItems": 2,
+            "minItems": 2
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "OwnerUpdate": {
+      "oneOf": [
+        {
+          "description": "Proposes a new owner to take role. Only current owner can execute.",
+          "type": "object",
+          "required": [
+            "propose_new_owner"
+          ],
+          "properties": {
+            "propose_new_owner": {
+              "type": "object",
+              "required": [
+                "proposed"
+              ],
+              "properties": {
+                "proposed": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "Clears the currently proposed owner. Only current owner can execute.",
+          "type": "string",
+          "enum": [
+            "clear_proposed"
+          ]
+        },
+        {
+          "description": "Promotes the proposed owner to be the current one. Only the proposed owner can execute.",
+          "type": "string",
+          "enum": [
+            "accept_proposed"
+          ]
+        },
+        {
+          "description": "Throws away the keys to the Owner role forever. Once done, no owner can ever be set later.",
+          "type": "string",
+          "enum": [
+            "abolish_owner_role"
+          ]
+        }
+      ]
+    }
+  }
+}
